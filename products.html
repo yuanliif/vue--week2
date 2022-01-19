@@ -12,6 +12,7 @@
     <div class="container w-80 py-5">
       <div class="productsList py-3">
         <h2 class="font-weight-bold pb-1">產品清單</h2>
+        <button class="btn btn-primary" @click="addData">新增產品</button>
         <table class="table table-hover">
           <thead>
             <tr>
@@ -20,57 +21,120 @@
               <th scope="col">原價</th>
               <th scope="col">特價</th>
               <th scope="col">是否啟用</th>
+              <th scope="col">詳細資料</th>
               <th scope="col">刪除</th>
-
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(product, index) in products" :key="product.id">
+              <th scope="row">{{index+1}}</th>
+              <td>{{product.title}}</td>
+              <td>{{product.origin_price}}</td>
+              <td>{{product.price}}</td>
+              <td>
+                <button type="button" class="btn btn-sm"
+                  :class="{'btn-secondary': product.is_enabled, 'btn-light': !product.is_enabled }"
+                  @click="product.is_enabled = !product.is_enabled" >
+                  {{ product.is_enabled ? '啟用' : '未啟用' }}
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#productInfo"
+                @click="getDataInfo(product)">
+                  more
+                </button>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm btn-danger" @click="deleteData(product)">
+                  刪除
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>目前有 <span id="productCount">{{ products.length }}</span> 項產品</p>
+      </div>
+      <div class="imageList py-5">
+        <h2 class="font-weight-bold pb-1">照片清單</h2>
+        <div class="input-group">
+          <div class="mb-3">
+            <label for="formFile" class="form-label"></label>
+            <input class="form-control" type="file" id="formFile"
+            placeholder="請輸入圖片連結"
+            accept="image/png, image/gif, image/jpeg">
+          </div>
+          <button class="btn input-group-append">
+            <span class="input-group-text " id="FileAdd">Upload</span>
+          </button>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">編號</th>
+              <th scope="col">照片名稱</th>
+              <th scope="col">主圖</th>
+              <th scope="col">是否啟用</th>
+              <th scope="col">刪除</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <th scope="row">1</th>
               <td>Mark</td>
+              <td>Mark</td>
               <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
               <td>@mdo</td>
             </tr>
           </tbody>
         </table>
         <p>目前有 <span id="productCount">0</span> 項產品</p>
       </div>
-      <div class="imageList py-5">
-      <h2 class="font-weight-bold pb-1">照片清單</h2>
-      <div class="input-group">
-        <div class="mb-3">
-          <label for="formFile" class="form-label"></label>
-          <input class="form-control" type="file" id="formFile"
-          placeholder="請輸入圖片連結"
-          accept="image/png, image/gif, image/jpeg">
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="productInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              {{tempProduct.title}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="card-body">
+              <h5 class="card-title">
+                {{ tempProduct.title }}
+                <span class="badge bg-primary ms-5">{{ tempProduct.category }}</span>
+              </h5>
+              <p class="card-text">商品描述：{{ tempProduct.description }}</p>
+              <p class="card-text">商品內容：{{ tempProduct.content }}</p>
+              <div class="d-flex">
+                <p class="card-text me-2">{{ tempProduct.price }}</p>
+                <p class="card-text text-secondary"><del>{{ tempProduct.origin_price }}</del></p>
+                {{ tempProduct.unit }} / 元
+              </div>
+            </div>
+            <div id="itemCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div class="carousel-item" :class="{ 'active': index === 0 }" v-for="( photo, index ) in tempProduct.imagesUrl" :key="index">
+                  <img v-if="photo" :src="photo" class="d-block w-100 images" :alt="tempProduct.title">
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#itemCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#itemCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+          </template>
         </div>
-        <button class="btn input-group-append">
-          <span class="input-group-text " id="FileAdd">Upload</span>
-        </button>
-      </div>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">編號</th>
-            <th scope="col">照片名稱</th>
-            <th scope="col">主圖</th>
-            <th scope="col">是否啟用</th>
-            <th scope="col">刪除</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>目前有 <span id="productCount">0</span> 項產品</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
