@@ -12,6 +12,8 @@ const product = {
     imageUrl: 'https://images.unsplash.com/photo-1573662012516-5cb4399006e7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1267&q=80'
   }
 }
+const formData = new FormData(); //用來產生表單格式
+
 
 createApp({
   data() {
@@ -20,6 +22,7 @@ createApp({
       apiPath: 'pastelsy',
       products: [],
       tempProduct: {},
+      image: {}
     }
   },
   methods: {
@@ -32,6 +35,17 @@ createApp({
         .catch((err) => {
           alert(err.response.data.message)
           window.location = 'index.html';
+        })
+    },
+    logout() {
+      const url = `${this.apiUrl}/logout`;
+      axios.post(url)
+        .then(() => {
+          alert('Logout success');
+          window.location = 'index.html';
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
         })
     },
     getData() {
@@ -66,6 +80,25 @@ createApp({
       })
       .catch(error => {
         console.dir(error)
+      })
+    },
+    uploadImage(event) {
+      const file = event.target.files[0]
+      formData.append('file-to-upload', file)
+      axios.post(`${this.apiUrl}/api/${this.apiPath}/admin/upload`, formData)
+        .then((res) => {
+          alert('success');
+          console.log(res.data);
+          this.getUpload();
+        })
+        .catch(error => {
+          console.dir(error)
+        })
+    },
+    getUpload() {
+      const image = formData.getAll('file-to-upload');
+      this.image = image.map(item => {
+        return item.name
       })
     }
   },

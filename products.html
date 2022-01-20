@@ -9,6 +9,11 @@
 </head>
 <body>
   <div id="app">
+    <nav class="navbar navbar-light bg-light">
+      <form class="container-fluid justify-content-end">
+        <button class="btn btn-outline-secondary me-2" type="button" @click="logout">Logout</button>
+      </form>
+    </nav>
     <div class="container w-80 py-5">
       <div class="productsList py-3">
         <h2 class="font-weight-bold pb-1">產品清單</h2>
@@ -56,40 +61,31 @@
       </div>
       <div class="imageList py-5">
         <h2 class="font-weight-bold pb-1">照片清單</h2>
-        <div class="input-group">
-          <div class="mb-3">
-            <label for="formFile" class="form-label"></label>
-            <input class="form-control" type="file" id="formFile"
-            placeholder="請輸入圖片連結"
-            accept="image/png, image/gif, image/jpeg">
+        <div class="input-group">->
+          <div>
+            <input type="file" accept="image/*" @change="uploadImage($event)" id="file-input"
+            />
           </div>
-          <button class="btn input-group-append">
-            <span class="input-group-text " id="FileAdd">Upload</span>
-          </button>
         </div>
         <table class="table table-hover">
           <thead>
             <tr>
               <th scope="col">編號</th>
               <th scope="col">照片名稱</th>
-              <th scope="col">主圖</th>
-              <th scope="col">是否啟用</th>
-              <th scope="col">刪除</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
+            <tr v-for="(item, index) in image" :key="index">
+              <th scope="row">{{index + 1}}</th>
+              <td>{{ item}}</td>
             </tr>
           </tbody>
         </table>
         <p>目前有 <span id="productCount">0</span> 項產品</p>
       </div>
     </div>
+
+
 
     <!-- Modal -->
     <div class="modal fade" id="productInfo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -137,6 +133,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
